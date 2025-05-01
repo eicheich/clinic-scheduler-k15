@@ -1,139 +1,172 @@
-from models import Doctor, Schedule, DataManager
-from utils import ScheduleUtils
+#!/usr/bin/env python
+# Clinic Scheduler - Simple Menu System
 
-class Admin:
-    def __init__(self):
-        self.data_manager = DataManager()
-        self.schedule_utils = ScheduleUtils()
+def clear_screen():
+    """Clear the terminal screen."""
+    import os
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-    def add_doctor(self):
-        print("\n--- Add New Doctor ---")
-        doctor_id = input("Enter doctor ID: ")
-        name = input("Enter doctor name: ")
-        specialty = input("Enter specialty: ")
-        contact = input("Enter contact info: ")
-        
-        new_doctor = Doctor(doctor_id, name, specialty, contact)
-        doctors_data = self.data_manager.load_data(self.data_manager.doctors_file)
-        doctors_data["doctors"].append(new_doctor.to_dict())
-        self.data_manager.save_data(self.data_manager.doctors_file, doctors_data)
-        print("Doctor added successfully!")
+def display_header():
+    """Display the application header."""
+    print("=" * 50)
+    print("           CLINIC SCHEDULER SYSTEM")
+    print("=" * 50)
+    print()
 
-    def add_schedule(self):
-        print("\n--- Add Doctor Schedule ---")
-        doctor_id = input("Enter doctor ID: ")
-        date = input("Enter date (YYYY-MM-DD): ")
-        start_time = input("Enter start time (HH:MM): ")
-        end_time = input("Enter end time (HH:MM): ")
-        
-        time_slots = self.schedule_utils.create_time_slots(start_time, end_time)
-        new_schedule = Schedule(doctor_id, date, time_slots)
-        
-        schedules_data = self.data_manager.load_data(self.data_manager.schedules_file)
-        schedules_data["schedules"].append(new_schedule.to_dict())
-        self.data_manager.save_data(self.data_manager.schedules_file, schedules_data)
-        print("Schedule added successfully!")
+# Main login menu
+def display_login_menu():
+    clear_screen()
+    display_header()
+    print("LOGIN MENU")
+    print("1. Login sebagai Admin")
+    print("2. Login sebagai Dokter")
+    print("3. Login sebagai Pasien")
+    print("4. Keluar")
+    print()
 
-class UserApp:
-    def __init__(self):
-        self.data_manager = DataManager()
-        self.schedule_utils = ScheduleUtils()
+# Authentication function (placeholder)
+def authenticate(role):
+    clear_screen()
+    display_header()
+    print(f"LOGIN SEBAGAI {role.upper()}")
+    print("-" * 30)
+    username = input("Username: ")
+    password = input("Password: ")
 
-    def view_doctors(self):
-        doctors = self.schedule_utils.get_available_doctors()
-        print("\n--- Available Doctors ---")
-        for doctor in doctors:
-            print(f"ID: {doctor['id']}, Name: {doctor['name']}, Specialty: {doctor['specialty']}")
+    # This is just a placeholder, actual authentication would be implemented later
+    if username and password:
+        print(f"\nLogin sebagai {role} berhasil!")
+        input("Tekan Enter untuk melanjutkan...")
+        return True
+    else:
+        print("\nLogin gagal. Username atau password salah.")
+        input("Tekan Enter untuk kembali...")
+        return False
 
-    def book_appointment(self):
-        self.view_doctors()
-        doctor_id = input("\nEnter doctor ID to book appointment: ")
-        schedule = self.schedule_utils.get_doctor_schedule(doctor_id)
-        
-        if not schedule:
-            print("No schedule found for this doctor.")
-            return
-        
-        if not self.schedule_utils.filter_expired_slots(schedule):
-            print("All slots for this date have expired.")
-            return
-        
-        print(f"\nAvailable slots for {schedule['date']}:")
-        available_slots = [slot for slot in schedule["time_slots"] if slot["available"]]
-        for i, slot in enumerate(available_slots):
-            print(f"{i+1}. {slot['time']}")
-        
-        if not available_slots:
-            print("No available slots for this doctor.")
-            return
-        
-        choice = int(input("Select slot number: ")) - 1
-        if 0 <= choice < len(available_slots):
-            selected_slot = available_slots[choice]
-            selected_slot["available"] = False
-            selected_slot["patient"] = "Patient Name"  # In real app, you'd get user info
-            
-            schedules_data = self.data_manager.load_data(self.data_manager.schedules_file)
-            for s in schedules_data["schedules"]:
-                if s["doctor_id"] == doctor_id and s["date"] == schedule["date"]:
-                    s["time_slots"] = schedule["time_slots"]
-                    break
-            
-            self.data_manager.save_data(self.data_manager.schedules_file, schedules_data)
-            print(f"Appointment booked for {selected_slot['time']}!")
-        else:
-            print("Invalid slot selection.")
-
-def main():
-    print("Welcome to Doctor's Scheduling System")
+# Admin menu
+def display_admin_menu():
     while True:
-        print("\n1. Admin Login")
-        print("2. User Login")
-        print("3. Exit")
-        choice = input("Select option: ")
-        
-        if choice == "1":
-            admin = Admin()
-            while True:
-                print("\nAdmin Menu:")
-                print("1. Add Doctor")
-                print("2. Add Schedule")
-                print("3. Back to Main Menu")
-                admin_choice = input("Select option: ")
-                
-                if admin_choice == "1":
-                    admin.add_doctor()
-                elif admin_choice == "2":
-                    admin.add_schedule()
-                elif admin_choice == "3":
-                    break
-                else:
-                    print("Invalid choice.")
-        
-        elif choice == "2":
-            user = UserApp()
-            while True:
-                print("\nUser Menu:")
-                print("1. View Doctors")
-                print("2. Book Appointment")
-                print("3. Back to Main Menu")
-                user_choice = input("Select option: ")
-                
-                if user_choice == "1":
-                    user.view_doctors()
-                elif user_choice == "2":
-                    user.book_appointment()
-                elif user_choice == "3":
-                    break
-                else:
-                    print("Invalid choice.")
-        
-        elif choice == "3":
-            print("Goodbye!")
+        clear_screen()
+        display_header()
+        print("MENU ADMIN")
+        print("-" * 30)
+        print("1. Tambah Jadwal Dokter (Create)")
+        print("2. Lihat Jadwal Dokter (Read)")
+        print("3. Update Jadwal Dokter (Update)")
+        print("4. Hapus Jadwal Dokter (Delete)")
+        print("5. Cari Jadwal Dokter (Search)")
+        print("6. Lihat Antrian Pasien")
+        print("7. Logout")
+        print()
+
+        choice = input("Pilih menu (1-7): ")
+
+        if choice == '1':
+            print("Fitur Tambah Jadwal Dokter akan diimplementasikan.")
+            input("Tekan Enter untuk kembali...")
+        elif choice == '2':
+            print("Fitur Lihat Jadwal Dokter akan diimplementasikan.")
+            input("Tekan Enter untuk kembali...")
+        elif choice == '3':
+            print("Fitur Update Jadwal Dokter akan diimplementasikan.")
+            input("Tekan Enter untuk kembali...")
+        elif choice == '4':
+            print("Fitur Hapus Jadwal Dokter akan diimplementasikan.")
+            input("Tekan Enter untuk kembali...")
+        elif choice == '5':
+            print("Fitur Cari Jadwal Dokter akan diimplementasikan.")
+            input("Tekan Enter untuk kembali...")
+        elif choice == '6':
+            print("Fitur Lihat Antrian Pasien akan diimplementasikan.")
+            input("Tekan Enter untuk kembali...")
+        elif choice == '7':
+            print("Logout berhasil.")
             break
-        
         else:
-            print("Invalid choice. Please try again.")
+            print("Pilihan tidak valid.")
+            input("Tekan Enter untuk kembali...")
+
+# Doctor menu
+def display_doctor_menu():
+    while True:
+        clear_screen()
+        display_header()
+        print("MENU DOKTER")
+        print("-" * 30)
+        print("1. Lihat Jadwal Saya")
+        print("2. Lihat Antrian Pasien Saya")
+        print("3. Logout")
+        print()
+
+        choice = input("Pilih menu (1-3): ")
+
+        if choice == '1':
+            print("Fitur Lihat Jadwal Saya akan diimplementasikan.")
+            input("Tekan Enter untuk kembali...")
+        elif choice == '2':
+            print("Fitur Lihat Antrian Pasien Saya akan diimplementasikan.")
+            input("Tekan Enter untuk kembali...")
+        elif choice == '3':
+            print("Logout berhasil.")
+            break
+        else:
+            print("Pilihan tidak valid.")
+            input("Tekan Enter untuk kembali...")
+
+# Patient menu
+def display_patient_menu():
+    while True:
+        clear_screen()
+        display_header()
+        print("MENU PASIEN")
+        print("-" * 30)
+        print("1. Lihat Jadwal Dokter")
+        print("2. Cari Dokter")
+        print("3. Daftar Antrian")
+        print("4. Logout")
+        print()
+
+        choice = input("Pilih menu (1-4): ")
+
+        if choice == '1':
+            print("Fitur Lihat Jadwal Dokter akan diimplementasikan.")
+            input("Tekan Enter untuk kembali...")
+        elif choice == '2':
+            print("Fitur Cari Dokter akan diimplementasikan.")
+            input("Tekan Enter untuk kembali...")
+        elif choice == '3':
+            print("Fitur Daftar Antrian akan diimplementasikan.")
+            input("Tekan Enter untuk kembali...")
+        elif choice == '4':
+            print("Logout berhasil.")
+            break
+        else:
+            print("Pilihan tidak valid.")
+            input("Tekan Enter untuk kembali...")
+
+# Main function
+def main():
+    while True:
+        display_login_menu()
+        choice = input("Pilih menu (1-4): ")
+
+        if choice == '1':  # Admin
+            if authenticate("Admin"):
+                display_admin_menu()
+        elif choice == '2':  # Doctor
+            if authenticate("Dokter"):
+                display_doctor_menu()
+        elif choice == '3':  # Patient
+            if authenticate("Pasien"):
+                display_patient_menu()
+        elif choice == '4':  # Exit
+            clear_screen()
+            print("Terima kasih telah menggunakan Clinic Scheduler System.")
+            print("Sampai jumpa kembali!")
+            break
+        else:
+            print("Pilihan tidak valid. Silakan coba lagi.")
+            input("Tekan Enter untuk kembali...")
 
 if __name__ == "__main__":
     main()
