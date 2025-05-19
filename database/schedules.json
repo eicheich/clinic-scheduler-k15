@@ -28,5 +28,15 @@
         "start_time": "09:00",
         "end_time": "14:00",
         "status": "Available"
+    },
+    {
+        "doctor_username": "D0001",
+        "doctor_name": "Dr. Smith",
+        "specialization": "Cardiology",
+        "date": "2025-01-19",
+        "start_time": "11:00",
+        "end_time": "13:00",
+        "status": "Available",
+        "id": 4
     }
 ]

@@ -839,7 +839,7 @@ def display_user_management_menu():
     while True:
         print("\n\n")
         display_header()
-        print("MENU KELOLA PENGGUNA")
+        print("USER MANAGEMENT MENU")
         print("-" * 30)
         print("1. View User List")
         print("2. Add New User")
