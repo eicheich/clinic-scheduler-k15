@@ -1,0 +1,22 @@
+📌 Senin, 19 Mei 2025:
+Buat PPT (max 5 slide) berisi :
+1. Deskripsi proyek
+   - Clinic Scheduler System adalah aplikasi berbasis Python untuk mengelola jadwal dokter, antrian pasien, dan administrasi klinik secara sederhana. Proyek ini dibuat sebagai tugas kelompok untuk mata kuliah Algoritma dan Struktur Data.
+
+2. Fitur
+   - Login multi-role (Admin, Doctor, Patient)
+   - Manajemen user (tambah, update, hapus)
+   - Manajemen jadwal dokter (tambah, lihat, update, hapus, cari)
+   - Admin dapat membuat appointment pasien ke dokter
+   - Pasien dapat melihat jadwal dokter & antrian sendiri
+   - Dokter dapat melihat jadwal & antrian pasien
+
+3. Screenshot output
+   - Tampilkan tampilan menu login, menu admin, menu dokter, dan menu pasien (bisa diambil dari hasil run aplikasi)
+
+4. Pembagian tugas + bobot kontribusi
+   - Anggota 1: Fitur login & manajemen user (35%)
+   - Anggota 2: Fitur jadwal dokter & appointment (35%)
+   - Anggota 3: Fitur menu pasien & dokter, dokumentasi, testing (30%)
+
+Catatan: Setiap anggota berkontribusi dalam diskusi desain dan debugging.

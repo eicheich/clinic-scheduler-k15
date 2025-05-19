@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "doctor_username": "D0001",
+        "doctor_name": "Dr. Smith",
+        "specialization": "Cardiology",
+        "date": "2023-05-18",
+        "start_time": "08:00",
+        "end_time": "12:00",
+        "status": "Available"
+    },
+    {
+        "id": 2,
+        "doctor_username": "D0001",
+        "doctor_name": "Dr. Smith",
+        "specialization": "Cardiology",
+        "date": "2023-05-19",
+        "start_time": "13:00",
+        "end_time": "17:00",
+        "status": "Available"
+    },
+    {
+        "id": 3,
+        "doctor_username": "D0002",
+        "doctor_name": "Dr. Johnson",
+        "specialization": "Pediatrics",
+        "date": "2023-05-18",
+        "start_time": "09:00",
+        "end_time": "14:00",
+        "status": "Available"
+    }
+]
