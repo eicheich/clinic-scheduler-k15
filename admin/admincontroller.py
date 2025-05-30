@@ -23,7 +23,7 @@ from schedule.schedulemanager import (
 )
 from database import (
     get_appointments, get_schedules, get_appointment, get_user,
-    add_appointment_db, update_appointment_db, delete_appointment_db
+    add_appointment_db, update_appointment_db, delete_appointment_db, get_specializations
 )
 
 def add_doctor_schedule():
@@ -36,6 +36,13 @@ def add_doctor_schedule():
     # Get doctor username
     display_users("Doctor")
     doctor_username = input("Enter doctor username: ")
+
+    # Show specialization info
+    doctor_data = get_user(doctor_username)
+    if doctor_data and doctor_data.get("role") == "Doctor":
+        specializations = {s["id"]: s["name"] for s in get_specializations()}
+        spec_id = doctor_data.get("specialization_id", 1)
+        print(f"Doctor specialization: {specializations.get(spec_id, 'Unknown')}")
 
     # Validate date format
     while True:
@@ -114,11 +121,14 @@ def view_doctor_schedules():
 
     # Fetch all schedules from database
     schedules = get_all_schedules()
+    from database import get_specializations
+    specializations = {s["id"]: s["name"] for s in get_specializations()}
 
     if schedules:
         for schedule in schedules:
             doctor_name = schedule.get("doctor_name", "Unknown")
-            specialization = schedule.get("specialization", "General")
+            spec_id = schedule.get("specialization_id", 1)
+            specialization = specializations.get(spec_id, "Unknown")
             date = schedule.get("date", "")
             time_slot = f"{schedule.get('start_time', '')}-{schedule.get('end_time', '')}"
             status = schedule.get("status", "Unknown")
@@ -168,10 +178,13 @@ def update_doctor_schedule():
         return
 
     # Display future schedules for selection
+    from database import get_specializations
+    specializations = {s["id"]: s["name"] for s in get_specializations()}
     for schedule in future_schedules:
         schedule_id = schedule.get("id", "")
         doctor_name = schedule.get("doctor_name", "Unknown")
-        specialization = schedule.get("specialization", "General")
+        spec_id = schedule.get("specialization_id", 1)
+        specialization = specializations.get(spec_id, "Unknown")
         date = schedule.get("date", "")
         time_slot = f"{schedule.get('start_time', '')}-{schedule.get('end_time', '')}"
         status = schedule.get("status", "Available")
@@ -353,10 +366,13 @@ def delete_doctor_schedule():
         return
 
     # Display future schedules for selection
+    from database import get_specializations
+    specializations = {s["id"]: s["name"] for s in get_specializations()}
     for schedule in future_schedules:
         schedule_id = schedule.get("id", "")
         doctor_name = schedule.get("doctor_name", "Unknown")
-        specialization = schedule.get("specialization", "General")
+        spec_id = schedule.get("specialization_id", 1)
+        specialization = specializations.get(spec_id, "Unknown")
         date = schedule.get("date", "")
         time_slot = f"{schedule.get('start_time', '')}-{schedule.get('end_time', '')}"
         status = schedule.get("status", "Available")

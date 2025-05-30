@@ -14,6 +14,7 @@ DB_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))
 USERS_DB = os.path.join(DB_DIR, "users.json")
 SCHEDULES_DB = os.path.join(DB_DIR, "schedules.json")
 APPOINTMENTS_DB = os.path.join(DB_DIR, "appointments.json")
+SPECIALIZATIONS_DB = os.path.join(DB_DIR, "specializations.json")
 
 def load_data(file_path):
     """Load data from a JSON file.
@@ -445,3 +446,8 @@ def delete_appointment_db(appointment_id):
             appointments.pop(i)
             return save_data(appointments, APPOINTMENTS_DB)
     return False
+
+def get_specializations():
+    """Get all specializations from the database."""
+    with open(SPECIALIZATIONS_DB, 'r') as f:
+        return json.load(f)

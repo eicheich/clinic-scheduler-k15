@@ -181,3 +181,18 @@ def update_appointment_status(appointment_id, new_status):
         return False
 
     return update_appointment_db(appointment_id, status=new_status)
+
+def update_appointment(appointment_id, **kwargs):
+    # Update an existing appointment
+    # appointment_id: ID of the appointment to update
+    # **kwargs: Fields to update and their new values
+    appointment = get_appointment(appointment_id)
+    if not appointment:
+        print(f"Appointment with ID {appointment_id} not found.")
+        return False
+    if update_appointment_db(appointment_id, **kwargs):
+        print(f"Appointment ID {appointment_id} has been updated successfully!")
+        return True
+    else:
+        print(f"Failed to update appointment ID {appointment_id}.")
+        return False

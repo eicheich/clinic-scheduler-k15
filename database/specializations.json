@@ -1,0 +1,7 @@
+[
+    {"id": 1, "name": "Cardiology"},
+    {"id": 2, "name": "Pediatrics"},
+    {"id": 3, "name": "General Medicine"},
+    {"id": 4, "name": "Dermatology"},
+    {"id": 5, "name": "Neurology"}
+]

@@ -9,6 +9,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from models import Admin, Doctor, Patient
 from database import get_users, get_user, add_user_db, update_user_db, delete_user_db, save_data, USERS_DB
+from database import get_specializations
 
 # Simple utility function to display the header
 def display_header():
@@ -57,10 +58,12 @@ def add_user(username, password, name, role, **kwargs):
         doctor_count = sum(1 for _, user_data in users.items() if user_data.get("role") == "Doctor")
         # Generate doctor number
         doctor_number = generate_doctor_number(doctor_count)
-        # Use doctor number as username
+        specialization_id = kwargs.get("specialization_id")
+        if specialization_id is not None:
+            user = {"password": password, "role": role, "name": name, "specialization_id": specialization_id, "doctor_number": doctor_number}
+        else:
+            user = {"password": password, "role": role, "name": name, "specialization_id": 1, "doctor_number": doctor_number}  # Default to 1
         username = doctor_number
-        specialization = kwargs.get("specialization", "General")
-        user = {"password": password, "role": role, "name": name, "specialization": specialization, "doctor_number": doctor_number}
     elif role == "Patient":
         # Count existing patients to generate patient number
         patient_count = sum(1 for _, user_data in users.items() if user_data.get("role") == "Patient")
@@ -82,6 +85,9 @@ def update_user(username, **kwargs):
     # **kwargs: Fields to update and their new values
     user = get_user(username)
     if user:
+        # Allow updating specialization_id for doctors
+        if user.get("role") == "Doctor" and "specialization_id" in kwargs:
+            user["specialization_id"] = kwargs["specialization_id"]
         if update_user_db(username, **kwargs):
             print(f"\nUser {username} data has been updated successfully!")
         else:
@@ -131,6 +137,7 @@ def display_users(role=None):
     display_header()
 
     users = get_users()
+    specializations = {s["id"]: s["name"] for s in get_specializations()}
 
     if role:
         print(f"USER LIST ({role.upper()})")
@@ -138,12 +145,15 @@ def display_users(role=None):
         print("ALL USERS LIST")
 
     print("-" * 50)
-    print(f"{'USERNAME':<15}{'NAME':<25}{'ROLE':<15}")
+    print(f"{'USERNAME':<15}{'NAME':<25}{'ROLE':<15}{'SPECIALIZATION':<20}")
     print("-" * 50)
 
     for username, user in users.items():
         if role is None or user["role"] == role:
-            print(f"{username:<15}{user['name']:<25}{user['role']:<15}")
+            specialization = ""
+            if user["role"] == "Doctor":
+                specialization = specializations.get(user.get("specialization_id", 1), "Unknown")
+            print(f"{username:<15}{user['name']:<25}{user['role']:<15}{specialization:<20}")
 
     print("-" * 50)
     input("Press Enter to return...")
